@@ -6,6 +6,7 @@ public class RestTime extends TimeTaker {
     public RestTime(int startTime, int duration){
         this.duration = duration;
         this.startTime = startTime;
+        //Start time MUST BE ENFORCED HERE
     }
     @Override
     public int getDuration() {

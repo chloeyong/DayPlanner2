@@ -29,6 +29,7 @@ public class Day {
 
     public void addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
         timeIntervals.add(ti);
+        //todo this needs testing with some dummy data!! get on it scrub!
         int currentTime = startTime;
         for(int i = 0;i < ti.getX().getIntervals().get(ti.getY());i++){
             availability.put(currentTime,ti.getX());

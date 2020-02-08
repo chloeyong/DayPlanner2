@@ -18,15 +18,20 @@ public class ChummiesMagicMaker implements BackEnd {
         ArrayList<RestTime> restTimes = frontEnd.getRestTimes();
         for (RestTime rest : restTimes){
             rest.getStartTime();
+            //todo get start times, use them to allocate the availability and shit in the day, then note the
+            //rest as such in the day in tuple form or whatever.
         }
         ArrayList<Task> tasks = frontEnd.getTasks();
         for (Task task : tasks){
             //todo allocate time for the tasks too
+            //Same as rest only working backwards to make sure that everything fits in a given constraint
         }
     }
 
     private void allocateRestTimes(Day day){
         for(Tuple<MyDateTime, Integer> restTimes:frontEnd.getOptions().getRestTimes()){
+
+            //todo, method is probably deprecated, work out usefullness and then delete or whatever is neccesary.
         }
     }
 
