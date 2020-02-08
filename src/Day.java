@@ -11,16 +11,15 @@ public class Day {
      * mutated to reflect its interval.
      */
     private Tuple<Task, Integer> taskIntervals;
-    private Date date;
+    private MyDateTime date;
 
-    public Date getDate() {
+    public MyDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(MyDateTime date) {
         this.date = date;
     }
-
 
     public Tuple<Task, Integer> getTaskIntervals() {
         return taskIntervals;

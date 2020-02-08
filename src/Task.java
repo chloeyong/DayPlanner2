@@ -11,7 +11,7 @@ public class Task {
     //array of int minutes of how long each interval is
     private ArrayList<Integer> intervals;
 
-    private Calendar deadline;
+    private MyDateTime deadline;
     private int urgency;
     private String description;
     private HashMap<String, Boolean> checklist;
@@ -43,11 +43,11 @@ public class Task {
         this.intervals = intervals;
     }
 
-    public Calendar getDeadline() {
+    public MyDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Calendar deadline) {
+    public void setDeadline(MyDateTime deadline) {
         this.deadline = deadline;
     }
 

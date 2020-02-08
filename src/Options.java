@@ -4,7 +4,7 @@ import java.util.Calendar;
 public class Options {
     private int drinkReminders;
     //<Time of Rest, Duration>
-    private ArrayList<Tuple<Calendar, Integer>> restTimes;
+    private ArrayList<Tuple<MyDateTime, Integer>> restTimes;
 
     public int getDrinkReminders() {
         return drinkReminders;
@@ -14,11 +14,11 @@ public class Options {
         this.drinkReminders = drinkReminders;
     }
 
-    public ArrayList<Tuple<Calendar, Integer>>  getRestTimes() {
+    public ArrayList<Tuple<MyDateTime, Integer>>  getRestTimes() {
         return restTimes;
     }
 
-    public void setRestTimes(ArrayList<Tuple<Calendar, Integer>> restTimes) {
+    public void setRestTimes(ArrayList<Tuple<MyDateTime, Integer>> restTimes) {
         this.restTimes = restTimes;
     }
 }
