@@ -10,7 +10,7 @@ public class Day {
      * This is going to have tasks where the name for each repeated (continued task) is
      * mutated to reflect its interval.
      */
-    private Tuple<Task, Integer> taskIntervals;
+    private Tuple<TimeTaker, Integer> timeIntervals;
     private MyDateTime date;
 
     public MyDateTime getDate() {
@@ -21,12 +21,8 @@ public class Day {
         this.date = date;
     }
 
-    public Tuple<Task, Integer> getTaskIntervals() {
-        return taskIntervals;
-    }
+    public void addTimeInterval(Tuple<TimeTaker, Integer> ti){
 
-    public void setTaskIntervals(Tuple<Task, Integer> taskIntervals) {
-        this.taskIntervals = taskIntervals;
     }
 
 

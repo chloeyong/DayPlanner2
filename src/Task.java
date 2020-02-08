@@ -6,11 +6,6 @@ import java.util.HashMap;
 public class Task extends TimeTaker{
 
     private String name;
-    private int totalDuration;
-
-    //array of int minutes of how long each interval is
-    private ArrayList<Integer> intervals;
-
     private MyDateTime deadline;
     private int urgency;
     private String description;
@@ -26,22 +21,6 @@ public class Task extends TimeTaker{
         this.name = name;
     }
 
-
-    public int getTotalDuration() {
-        return totalDuration;
-    }
-
-    public void setTotalDuration(int totalDuration) {
-        this.totalDuration = totalDuration;
-    }
-
-    public ArrayList<Integer> getIntervals() {
-        return intervals;
-    }
-
-    public void setIntervals(ArrayList<Integer> intervals) {
-        this.intervals = intervals;
-    }
 
     public MyDateTime getDeadline() {
         return deadline;
