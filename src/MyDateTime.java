@@ -8,6 +8,10 @@ public class MyDateTime {
         this.min = min;
     }
 
+    public int getSum(){
+        return date*10000+min;
+    }
+
     public int getDate() {
         return date;
     }

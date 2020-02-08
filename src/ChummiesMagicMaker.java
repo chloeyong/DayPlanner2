@@ -1,10 +1,7 @@
 import java.awt.image.AreaAveragingScaleFilter;
 import java.lang.reflect.Array;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 public class ChummiesMagicMaker implements BackEnd {
     private ArrayList<Day> days;
@@ -45,8 +42,10 @@ public class ChummiesMagicMaker implements BackEnd {
                 tasksForWhenever.add(task);
             }
         }
-
+        Collections.sort(tasksWithDeads, new DeadlineComparitor());
         //todo gotta order the deads list list by deads my head hurts
+
+
         for(int i = 1;i<=largestNumberOfIntervals();i++){
             for (Task task : tasksWithDeads){
                 if (task.getIntervals().size()>=i){
