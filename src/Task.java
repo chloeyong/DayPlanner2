@@ -11,6 +11,24 @@ public class Task extends TimeTaker{
     private String description;
     private HashMap<String, Boolean> checklist;
     private String category;
+    private int duration;
+
+    public Task(String name, int urgency, String description, String category, int duration) {
+        this.name = name;
+        this.urgency = urgency;
+        this.description = description;
+        this.category = category;
+        this.duration = duration;
+    }
+
+    public Task(String name, MyDateTime deadline, int urgency, String description, String category, int duration) {
+        this.name = name;
+        this.deadline = deadline;
+        this.urgency = urgency;
+        this.description = description;
+        this.category = category;
+        this.duration = duration;
+    }
 
 
     public String getName() {
