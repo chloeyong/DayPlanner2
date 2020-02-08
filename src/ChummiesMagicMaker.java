@@ -35,10 +35,25 @@ public class ChummiesMagicMaker implements BackEnd {
         Day day = days.get(0);
 
         ArrayList<Task> tasks = frontEnd.getTasks();
-        for (Task task : tasks){
-            //todo allocate time for the tasks too
-            //Same as rest only working backwards to make sure that everything fits in a given constraint
+        for(int i = 0;i<largestNumberOfIntervals();i++){
+            for (Task task : tasks){
+                if (task.getIntervals().size()>=i){
+                    //todo decipher the true nature of intervals, what are they really?
+                }
+                //todo allocate time for the tasks too
+                //Same as rest only working backwards to make sure that everything fits in a given constraint
+            }
         }
+    }
+
+    private int largestNumberOfIntervals(){
+        int largest = 1;
+        for (Task task: frontEnd.getTasks()){
+            if (task.getIntervals().size()<largest){
+                largest=task.getIntervals().size();
+            }
+        }
+        return largest;
     }
 
     private void allocateRestTimes(Day day){
