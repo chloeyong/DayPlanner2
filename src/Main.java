@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 
@@ -25,7 +26,6 @@ public class Main {
     private JPanel dayPanel;
     private JPanel infoPanel;
     private JPanel calendarPanel;
-    //private JPanel buttonPanel;
 
     private JScrollPane dayScrollPane;
     private JScrollPane taskScrollPane;
@@ -40,6 +40,14 @@ public class Main {
     private JPanel infoDisplayPanel;
 
     private JCalendar calendar;
+
+    private JPanel newTaskPanel;
+    private JPanel inputPanel;
+    private JButton saveButton;
+
+    private String[][] taskData;
+
+
 
 
     public Main() {
@@ -68,6 +76,9 @@ public class Main {
         taskButton = new JButton("Tasks");
         nextButton = new JButton("Next");
 
+        newTaskPanel = new JPanel(new BorderLayout());
+        inputPanel = new JPanel(new GridLayout(7,2));
+        saveButton = new JButton("Save");
 
 
         String[][] times= {
@@ -102,8 +113,7 @@ public class Main {
         dayTimetable = new JTable(times, columnNamesTimetable);
         dayScrollPane = new JScrollPane(dayTimetable);
 
-        String[][] taskData = {
-                {"Homework", "2 hrs", "2", "14/2/20", "Urgent", "Revision for Test", "Work"},
+        taskData = new String[][] {{"Homework", "2 hrs", "2", "14/2/20", "Urgent", "Revision for Test", "Work"},
                 {"Nap", "1 hr", "1", "today" , " Non-urgent", "Rest", "Sleep"}
         };
 
@@ -138,7 +148,6 @@ public class Main {
         infoPanel.add(addNewTaskButton);
 
 
-
         nextButton.addActionListener(e->{
             cardLayout.show(dayPanel, "timetable");
         });
@@ -161,9 +170,55 @@ public class Main {
             }
         });
 
+        String [] urgencyStrings = {"Non-urgent", "Urgent", "Very urgent"};
+        String[] categoryStrings = {"Work", "Sleep", "Eat", "Rest", "Activity"};
+
+        JLabel name = new JLabel("Name: ");
+        JLabel description = new JLabel("Description: ");
+        JLabel duration = new JLabel("Duration: ");
+        JLabel intervals = new JLabel("Intervals: ");
+        JLabel urgency = new JLabel("Urgency: ");
+        JLabel category = new JLabel("Category: ");
+
+        JTextField inputName= new JTextField(15);
+        JTextField inputDescription = new JTextField((15));
+        JSpinner inputDuration = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+        JSpinner inputIntervals = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+        JComboBox inputUrgency = new JComboBox(urgencyStrings);
+        JComboBox inputCategory = new JComboBox(categoryStrings);
+
+        JLabel e1 = new JLabel(" ");
+
+        inputPanel.add(name); inputPanel.add(inputName);
+        inputPanel.add(description); inputPanel.add(inputDescription);
+        inputPanel.add(duration); inputPanel.add(inputDuration);
+        inputPanel.add(intervals); inputPanel.add(inputIntervals);
+        inputPanel.add(urgency); inputPanel.add(inputUrgency);
+        inputPanel.add(category); inputPanel.add(inputCategory);
+        inputPanel.add(saveButton); inputPanel.add(e1);
+
+        inputPanel.setVisible(false);
+
+        addNewTaskButton.addActionListener(e->{
+            inputPanel.setVisible(true);
+        });
+        saveButton.addActionListener(e->{
+            inputPanel.setVisible(false);
+            String [] newTask = {inputName.getText(),
+                    inputDescription.getText(),
+                    (String) inputDuration.getValue(),
+                    (String) inputIntervals.getValue(),
+                    (String) inputUrgency.getSelectedItem(),
+                    (String) inputCategory.getSelectedItem()
+            };
+
+        });
+
+
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         mainPanel.add(infoPanel, BorderLayout.WEST);
+        mainPanel.add(inputPanel, BorderLayout.EAST);
         mainPanel.add(dayPanel, BorderLayout.CENTER);
 
         f.getContentPane().add(mainPanel);
