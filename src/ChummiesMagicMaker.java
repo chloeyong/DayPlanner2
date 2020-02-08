@@ -8,16 +8,19 @@ import java.util.HashMap;
 public class ChummiesMagicMaker implements BackEnd {
     private ArrayList<Day> days;
     private FrontEnd frontEnd;
+    private MyDateTime earliestStart;
 
-
-    public ChummiesMagicMaker(FrontEnd frontEnd){
+    public ChummiesMagicMaker(FrontEnd frontEnd, MyDateTime startTime){
+        this.earliestStart = startTime;
         this.frontEnd = frontEnd;
     }
 
     private void generateDays(){
+
         ArrayList<RestTime> restTimes = frontEnd.getRestTimes();
         for (RestTime rest : restTimes){
-            rest.getStartTime();
+
+
             //todo get start times, use them to allocate the availability and shit in the day, then note the
             //rest as such in the day in tuple form or whatever.
         }
@@ -73,7 +76,8 @@ public class ChummiesMagicMaker implements BackEnd {
         this.days = days;
     }
 
-    public void addTask(Task task){
+    public void addTask(Task task, MyDateTime startTime){
+        earliestStart = startTime;
 
     }
 }

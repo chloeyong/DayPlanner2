@@ -3,6 +3,8 @@ import java.util.Calendar;
 
 public class Options {
     private int drinkReminders;
+
+    private int shortRest;
     //<Time of Rest, Duration>
     private ArrayList<Tuple<MyDateTime, Integer>> restTimes;
 

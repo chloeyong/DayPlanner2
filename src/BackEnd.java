@@ -8,7 +8,7 @@ public interface BackEnd {
 
     public ArrayList<Day> getDays();
 
-    public void addTask(Task task);
+    public void addTask(Task task, MyDateTime startTime);
 
 //    public Task
 
