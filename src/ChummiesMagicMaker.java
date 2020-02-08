@@ -1,6 +1,3 @@
-import java.awt.image.AreaAveragingScaleFilter;
-import java.lang.reflect.Array;
-import java.sql.Time;
 import java.util.*;
 
 public class ChummiesMagicMaker implements BackEnd {
@@ -14,6 +11,8 @@ public class ChummiesMagicMaker implements BackEnd {
         this.frontEnd = frontEnd;
         this.currentDay = 0;
     }
+
+
 
     private void generateDays(){
         for(int i = 0; i<100; i++){
