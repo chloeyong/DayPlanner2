@@ -10,8 +10,14 @@ public class Day {
      * This is going to have tasks where the name for each repeated (continued task) is
      * mutated to reflect its interval.
      */
-    private Tuple<TimeTaker, Integer> timeIntervals;
+    private ArrayList<Tuple<TimeTaker, Integer>> timeIntervals;
+    //Signifies if time is allocated <Time,Time taker in that time slot>
+    private HashMap<Integer, TimeTaker> availability;
     private MyDateTime date;
+
+    public Day(){
+        timeIntervals = new ArrayList<Tuple<TimeTaker, Integer>>();
+    }
 
     public MyDateTime getDate() {
         return date;
@@ -21,8 +27,19 @@ public class Day {
         this.date = date;
     }
 
-    public void addTimeInterval(Tuple<TimeTaker, Integer> ti){
+    public void addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
+        timeIntervals.add(ti);
+        int currentTime = startTime;
+        for(int i = 0;i < ti.getX().getIntervals().get(ti.getY());i++){
+            availability.put(currentTime,ti.getX());
+            currentTime = incrementMins(currentTime);
+        }
+    }
 
+    private int incrementMins(int mins){
+        if(mins < 1439)
+            return mins++;
+        else return 0;
     }
 
 

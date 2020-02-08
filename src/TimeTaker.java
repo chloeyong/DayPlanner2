@@ -20,4 +20,5 @@ public abstract class TimeTaker {
     public void setIntervals(ArrayList<Integer> intervals) {
         this.intervals = intervals;
     }
+
 }

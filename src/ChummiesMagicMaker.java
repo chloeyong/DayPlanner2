@@ -9,8 +9,6 @@ public class ChummiesMagicMaker implements BackEnd {
     private ArrayList<Day> days;
     private FrontEnd frontEnd;
 
-    //Signifies if time is allocated
-    private HashMap<Integer, Boolean> availability;
 
     public ChummiesMagicMaker(FrontEnd frontEnd){
         this.frontEnd = frontEnd;
@@ -39,7 +37,7 @@ public class ChummiesMagicMaker implements BackEnd {
     private int getTotalWorkTime(){
         int total = 0;
         for(Task task:frontEnd.getTasks()){
-            total += task.getTotalDuration();
+//            total += task.getTotalDuration();
         }
         return total;
     }
