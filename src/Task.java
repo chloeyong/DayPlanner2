@@ -3,7 +3,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Task {
+public class Task extends TimeTaker{
 
     private String name;
     private int totalDuration;

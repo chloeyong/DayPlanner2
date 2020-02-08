@@ -1,4 +1,5 @@
 import java.lang.reflect.Array;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,7 +17,14 @@ public class ChummiesMagicMaker implements BackEnd {
     }
 
     private void generateDays(){
+        ArrayList<RestTime> restTimes = frontEnd.getRestTimes();
+        for (RestTime rest : restTimes){
+            rest.getStartTime();
+        }
         ArrayList<Task> tasks = frontEnd.getTasks();
+        for (Task task : tasks){
+            //todo allocate time for the tasks too
+        }
     }
 
     private void allocateRestTimes(Day day){
