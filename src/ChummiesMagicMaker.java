@@ -16,14 +16,24 @@ public class ChummiesMagicMaker implements BackEnd {
     }
 
     private void generateDays(){
-
-        ArrayList<RestTime> restTimes = frontEnd.getRestTimes();
-        for (RestTime rest : restTimes){
-
-
-            //todo get start times, use them to allocate the availability and shit in the day, then note the
-            //rest as such in the day in tuple form or whatever.
+        for(int i = 0; i<100; i++){
+            Day day;
+            if(i==0){
+                day = new Day(earliestStart);
+                days.add(day);
+            }else{
+                MyDateTime geneDay = new MyDateTime(earliestStart.getDate(), earliestStart.getMin() );
+                day = new Day(geneDay);
+                days.add(day);
+            }
+            ArrayList<RestTime> restTimes = frontEnd.getRestTimes();
+            for (RestTime rest : restTimes){
+                Tuple tuple = new Tuple(rest, 0);
+                day.addTimeInterval(tuple,rest.getStartTime());
+            }
         }
+        Day day = days.get(0);
+
         ArrayList<Task> tasks = frontEnd.getTasks();
         for (Task task : tasks){
             //todo allocate time for the tasks too

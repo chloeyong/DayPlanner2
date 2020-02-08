@@ -3,6 +3,11 @@ public class MyDateTime {
     private int date;
     private int min;
 
+    public MyDateTime(int date, int min){
+        this.date=date;
+        this.min = min;
+    }
+
     public int getDate() {
         return date;
     }

@@ -18,8 +18,10 @@ public class Day {
     private HashMap<Integer, TimeTaker> availability;
     private MyDateTime date;
 
-    public Day(){
+    public Day(MyDateTime date){
         timeTakerAndIntervalLength = new ArrayList<Tuple<TimeTaker, Integer>>();
+        this.availability = new HashMap<>();
+        setDate(date);
     }
 
     public MyDateTime getDate() {
@@ -35,7 +37,7 @@ public class Day {
         //todo this needs testing with some dummy data!! get on it scrub!
         int currentTime = startTime;
         for(int i = 0;i < ti.getX().getIntervals().get(ti.getY());i++){
-            availability.put(currentTime,ti.getX());
+            this.availability.put(currentTime,ti.getX());
             currentTime = incrementMins(currentTime);
         }
     }
@@ -44,6 +46,10 @@ public class Day {
         if(mins < 1439)
             return mins++;
         else return 0;
+    }
+
+    public HashMap<Integer, TimeTaker> getAvailability(){
+        return availability;
     }
 
 
