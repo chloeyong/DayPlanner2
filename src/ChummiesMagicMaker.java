@@ -1,18 +1,18 @@
+import java.awt.image.AreaAveragingScaleFilter;
 import java.lang.reflect.Array;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 public class ChummiesMagicMaker implements BackEnd {
     private ArrayList<Day> days;
     private FrontEnd frontEnd;
     private MyDateTime earliestStart;
+    private int currentDay;
 
     public ChummiesMagicMaker(FrontEnd frontEnd, MyDateTime startTime){
         this.earliestStart = startTime;
         this.frontEnd = frontEnd;
+        this.currentDay = 0;
     }
 
     private void generateDays(){
@@ -32,17 +32,39 @@ public class ChummiesMagicMaker implements BackEnd {
                 day.addTimeInterval(tuple,rest.getStartTime());
             }
         }
-        Day day = days.get(0);
 
         ArrayList<Task> tasks = frontEnd.getTasks();
-        for(int i = 0;i<largestNumberOfIntervals();i++){
-            for (Task task : tasks){
+        ArrayList<Task> tasksWithDeads = new ArrayList<>();
+        ArrayList<Task> tasksForWhenever = new ArrayList<>();
+        for (Task task : tasks){
+            if (!task.getDeadline().equals(null)){
+                tasksWithDeads.add(task);
+            }else{
+                tasksForWhenever.add(task);
+            }
+        }
+        Collections.sort(tasksWithDeads, new DeadlineComparitor());
+        //todo gotta order the deads list list by deads my head hurts
+
+
+        for(int i = 1;i<=largestNumberOfIntervals();i++){
+            for (Task task : tasksWithDeads){
                 if (task.getIntervals().size()>=i){
+                    int nextAvail = days.get(currentDay).getNextAvailability();
+                    int nextInterval = days.get(currentDay).nextPossibleInterval(task);
+                    if(nextInterval!= -1) {
+                        if(days.get(currentDay).addTimeInterval(new Tuple(task, nextInterval), nextAvail))
+                            tasksWithDeads.remove(task);
+                    }
+                    else{
+                        currentDay++;
+                    }
                     //todo decipher the true nature of intervals, what are they really?
                 }
                 //todo allocate time for the tasks too
                 //Same as rest only working backwards to make sure that everything fits in a given constraint
             }
+            //todo for tasks without deadlines has to be done too!!
         }
     }
 
