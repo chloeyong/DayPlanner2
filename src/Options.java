@@ -2,17 +2,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Options {
-    private int sleepTime;
     private int drinkReminders;
-    private ArrayList<Calendar> restTimes;
-
-    public int getSleepTime() {
-        return sleepTime;
-    }
-
-    public void setSleepTime(int sleepTime) {
-        this.sleepTime = sleepTime;
-    }
+    //<Time of Rest, Duration>
+    private ArrayList<Tuple<Calendar, Integer>> restTimes;
 
     public int getDrinkReminders() {
         return drinkReminders;
@@ -22,11 +14,11 @@ public class Options {
         this.drinkReminders = drinkReminders;
     }
 
-    public ArrayList<Calendar> getRestTimes() {
+    public ArrayList<Tuple<Calendar, Integer>>  getRestTimes() {
         return restTimes;
     }
 
-    public void setRestTimes(ArrayList<Calendar> restTimes) {
+    public void setRestTimes(ArrayList<Tuple<Calendar, Integer>> restTimes) {
         this.restTimes = restTimes;
     }
 }
