@@ -3,15 +3,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Task {
+public class Task extends TimeTaker{
 
     private String name;
-    private int totalDuration;
-
-    //array of int minutes of how long each interval is
-    private ArrayList<Integer> intervals;
-
-    private Calendar deadline;
+    private MyDateTime deadline;
     private int urgency;
     private String description;
     private HashMap<String, Boolean> checklist;
@@ -27,27 +22,11 @@ public class Task {
     }
 
 
-    public int getTotalDuration() {
-        return totalDuration;
-    }
-
-    public void setTotalDuration(int totalDuration) {
-        this.totalDuration = totalDuration;
-    }
-
-    public ArrayList<Integer> getIntervals() {
-        return intervals;
-    }
-
-    public void setIntervals(ArrayList<Integer> intervals) {
-        this.intervals = intervals;
-    }
-
-    public Calendar getDeadline() {
+    public MyDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Calendar deadline) {
+    public void setDeadline(MyDateTime deadline) {
         this.deadline = deadline;
     }
 

@@ -1,27 +1,83 @@
 import java.lang.reflect.Array;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class ChummiesMagicMaker implements BackEnd {
-    ArrayList<Day> days;
-    FrontEnd frontEnd;
-    public ChummiesMagicMaker(FrontEnd frontEnd){
+    private ArrayList<Day> days;
+    private FrontEnd frontEnd;
+    private MyDateTime earliestStart;
+
+    public ChummiesMagicMaker(FrontEnd frontEnd, MyDateTime startTime){
+        this.earliestStart = startTime;
         this.frontEnd = frontEnd;
     }
 
     private void generateDays(){
+        for(int i = 0; i<100; i++){
+            Day day;
+            if(i==0){
+                day = new Day(earliestStart);
+                days.add(day);
+            }else{
+                MyDateTime geneDay = new MyDateTime(earliestStart.getDate(), earliestStart.getMin() );
+                day = new Day(geneDay);
+                days.add(day);
+            }
+            ArrayList<RestTime> restTimes = frontEnd.getRestTimes();
+            for (RestTime rest : restTimes){
+                Tuple tuple = new Tuple(rest, 0);
+                day.addTimeInterval(tuple,rest.getStartTime());
+            }
+        }
+        Day day = days.get(0);
 
+        ArrayList<Task> tasks = frontEnd.getTasks();
+        for(int i = 0;i<largestNumberOfIntervals();i++){
+            for (Task task : tasks){
+                if (task.getIntervals().size()>=i){
+                    //todo decipher the true nature of intervals, what are they really?
+                }
+                //todo allocate time for the tasks too
+                //Same as rest only working backwards to make sure that everything fits in a given constraint
+            }
+        }
+    }
+
+    private int largestNumberOfIntervals(){
+        int largest = 1;
+        for (Task task: frontEnd.getTasks()){
+            if (task.getIntervals().size()<largest){
+                largest=task.getIntervals().size();
+            }
+        }
+        return largest;
+    }
+
+    private void allocateRestTimes(Day day){
+        for(Tuple<MyDateTime, Integer> restTimes:frontEnd.getOptions().getRestTimes()){
+
+            //todo, method is probably deprecated, work out usefullness and then delete or whatever is neccesary.
+        }
+    }
+
+    private int getNumOfDays(){
+        return (getTotalWorkTime() + getRestTimePerDay()) / 24;
     }
 
     private int getTotalWorkTime(){
         int total = 0;
+        for(Task task:frontEnd.getTasks()){
+//            total += task.getTotalDuration();
+        }
         return total;
     }
 
     private int getRestTimePerDay(){
         int total = 0;
-        for(Tuple<Calendar, Integer> restTime : frontEnd.getOptions().getRestTimes()){
+        for(Tuple<MyDateTime, Integer> restTime : frontEnd.getOptions().getRestTimes()){
           total += restTime.getY();
         }
         return total;
@@ -45,7 +101,8 @@ public class ChummiesMagicMaker implements BackEnd {
         this.days = days;
     }
 
-    public void addTask(Task task){
+    public void addTask(Task task, MyDateTime startTime){
+        earliestStart = startTime;
 
     }
 }
