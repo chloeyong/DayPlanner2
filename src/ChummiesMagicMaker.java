@@ -1,3 +1,4 @@
+import java.awt.image.AreaAveragingScaleFilter;
 import java.lang.reflect.Array;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -35,14 +36,27 @@ public class ChummiesMagicMaker implements BackEnd {
         Day day = days.get(0);
 
         ArrayList<Task> tasks = frontEnd.getTasks();
-        for(int i = 0;i<largestNumberOfIntervals();i++){
-            for (Task task : tasks){
+        ArrayList<Task> tasksWithDeads = new ArrayList<>();
+        ArrayList<Task> tasksForWhenever = new ArrayList<>();
+        for (Task task : tasks){
+            if (!task.getDeadline().equals(null)){
+                tasksWithDeads.add(task);
+            }else{
+                tasksForWhenever.add(task);
+            }
+        }
+
+        //todo gotta order the deads list list by deads my head hurts
+        for(int i = 1;i<=largestNumberOfIntervals();i++){
+            for (Task task : tasksWithDeads){
                 if (task.getIntervals().size()>=i){
+
                     //todo decipher the true nature of intervals, what are they really?
                 }
                 //todo allocate time for the tasks too
                 //Same as rest only working backwards to make sure that everything fits in a given constraint
             }
+            //todo for tasks without deadlines has to be done too!!
         }
     }
 
