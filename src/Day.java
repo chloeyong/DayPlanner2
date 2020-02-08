@@ -32,14 +32,19 @@ public class Day {
         this.date = date;
     }
 
-    public void addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
+    public boolean addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
         timeTakerAndIntervalLength.add(ti);
         //todo this needs testing with some dummy data!! get on it scrub!
         int currentTime = startTime;
         for(int i = 0;i < ti.getX().getIntervals().get(ti.getY());i++){
             this.availability.put(currentTime,ti.getX());
             currentTime = incrementMins(currentTime);
+            ti.getX().getIntervals().remove(i);
+            if(ti.getX().getIntervals().size() == 0){
+                return true;
+            }
         }
+        return false;
     }
 
     private int incrementMins(int mins){
@@ -50,6 +55,24 @@ public class Day {
 
     public HashMap<Integer, TimeTaker> getAvailability(){
         return availability;
+    }
+
+    public int getNextAvailability(){
+        for (int i = 0; i < 1441; i++){
+            if(availability.get(i) == null){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int nextPossibleInterval(TimeTaker timeTaker) {
+        for (int interval : timeTaker.getIntervals()) {
+            if (getNextAvailability() + interval <= 1440 && getNextAvailability() != -1) {
+                return timeTaker.getIntervals().get(interval);
+            }
+        }
+        return -1;
     }
 
 

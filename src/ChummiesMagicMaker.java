@@ -7,10 +7,12 @@ public class ChummiesMagicMaker implements BackEnd {
     private ArrayList<Day> days;
     private FrontEnd frontEnd;
     private MyDateTime earliestStart;
+    private int currentDay;
 
     public ChummiesMagicMaker(FrontEnd frontEnd, MyDateTime startTime){
         this.earliestStart = startTime;
         this.frontEnd = frontEnd;
+        this.currentDay = 0;
     }
 
     private void generateDays(){
@@ -30,7 +32,6 @@ public class ChummiesMagicMaker implements BackEnd {
                 day.addTimeInterval(tuple,rest.getStartTime());
             }
         }
-        Day day = days.get(0);
 
         ArrayList<Task> tasks = frontEnd.getTasks();
         ArrayList<Task> tasksWithDeads = new ArrayList<>();
@@ -49,7 +50,15 @@ public class ChummiesMagicMaker implements BackEnd {
         for(int i = 1;i<=largestNumberOfIntervals();i++){
             for (Task task : tasksWithDeads){
                 if (task.getIntervals().size()>=i){
-
+                    int nextAvail = days.get(currentDay).getNextAvailability();
+                    int nextInterval = days.get(currentDay).nextPossibleInterval(task);
+                    if(nextInterval!= -1) {
+                        if(days.get(currentDay).addTimeInterval(new Tuple(task, nextInterval), nextAvail))
+                            tasksWithDeads.remove(task);
+                    }
+                    else{
+                        currentDay++;
+                    }
                     //todo decipher the true nature of intervals, what are they really?
                 }
                 //todo allocate time for the tasks too
