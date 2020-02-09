@@ -10,8 +10,25 @@ public class ChummiesMagicMaker implements BackEnd {
         this.earliestStart = startTime;
         this.frontEnd = frontEnd;
         this.currentDay = 0;
+        days= new ArrayList<>();
     }
 
+
+    public static void main(String[] args){
+        ChummiesMagicMaker magicMaker = new ChummiesMagicMaker(new MockFrontEnd(), new MyDateTime(20200206, 0));
+        magicMaker.generateDays();
+        Day thisDay = magicMaker.days.get(0);
+        for(Tuple thing: thisDay.getTimeTakerAndIntervalLength()){
+            if (thing.getX() instanceof Task){
+                System.out.println(((Task) thing.getX()).getName());
+            }else if(thing.getX() instanceof RestTime){
+                System.out.println("Rest time");
+            }
+
+            //todo bugtest the generateDays() method
+
+        }
+    }
 
 
     private void generateDays(){
@@ -27,8 +44,10 @@ public class ChummiesMagicMaker implements BackEnd {
             }
             ArrayList<RestTime> restTimes = frontEnd.getRestTimes();
             for (RestTime rest : restTimes){
+//                System.out.println("Started again?");
                 Tuple tuple = new Tuple(rest, 0);
                 day.addTimeInterval(tuple,rest.getStartTime());
+//                System.out.println("Made it to the endZone once");
             }
         }
 
@@ -43,7 +62,6 @@ public class ChummiesMagicMaker implements BackEnd {
             }
         }
         Collections.sort(tasksWithDeads, new DeadlineComparitor());
-        //todo gotta order the deads list list by deads my head hurts
 
 
         for(int i = 1;i<=largestNumberOfIntervals();i++){
@@ -54,13 +72,12 @@ public class ChummiesMagicMaker implements BackEnd {
                     if(nextInterval!= -1) {
                         if(days.get(currentDay).addTimeInterval(new Tuple(task, nextInterval), nextAvail))
                             tasksWithDeads.remove(task);
+//                        days.get(currentDay).addTimeInterval(new RestTime())
                     }
                     else{
                         currentDay++;
                     }
-                    //todo decipher the true nature of intervals, what are they really?
                 }
-                //todo allocate time for the tasks too
                 //Same as rest only working backwards to make sure that everything fits in a given constraint
             }
             //todo for tasks without deadlines has to be done too!!
@@ -77,12 +94,12 @@ public class ChummiesMagicMaker implements BackEnd {
         return largest;
     }
 
-    private void allocateRestTimes(Day day){
-        for(Tuple<MyDateTime, Integer> restTimes:frontEnd.getOptions().getRestTimes()){
-
-            //todo, method is probably deprecated, work out usefullness and then delete or whatever is neccesary.
-        }
-    }
+//    private void allocateRestTimes(Day day){
+//        for(Tuple<MyDateTime, Integer> restTimes:frontEnd.getOptions().getRestTimes()){
+//
+//            //todo, method is probably deprecated, work out usefullness and then delete or whatever is neccesary.
+//        }
+//    }
 
     private int getNumOfDays(){
         return (getTotalWorkTime() + getRestTimePerDay()) / 24;
@@ -98,8 +115,9 @@ public class ChummiesMagicMaker implements BackEnd {
 
     private int getRestTimePerDay(){
         int total = 0;
-        for(Tuple<MyDateTime, Integer> restTime : frontEnd.getOptions().getRestTimes()){
-          total += restTime.getY();
+        ArrayList<RestTime> tobeTupled = frontEnd.getRestTimes();
+        for(RestTime restTime : tobeTupled){
+          total += restTime.getDuration();
         }
         return total;
     }
