@@ -48,10 +48,26 @@ public class Main {
     private String[][] taskData;
 
 
+    String [] urgencyStrings = {"Non-urgent", "Urgent", "Very urgent"};
+    String[] categoryStrings = {"Work", "Sleep", "Eat", "Rest", "Activity"};
+
+    JLabel name = new JLabel("Name: ");
+    JLabel description = new JLabel("Description: ");
+    JLabel duration = new JLabel("Duration: ");
+    JLabel intervals = new JLabel("Intervals: ");
+    JLabel urgency = new JLabel("Urgency: ");
+    JLabel category = new JLabel("Category: ");
+
+    JTextField inputName= new JTextField(15);
+    JTextField inputDescription = new JTextField((15));
+    JSpinner inputDuration = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    JSpinner inputIntervals = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    JComboBox inputUrgency = new JComboBox(urgencyStrings);
+    JComboBox inputCategory = new JComboBox(categoryStrings);
 
 
-    public Main() {
 
+    public void init(){
         f = new JFrame();
         mainPanel = new JPanel(new BorderLayout());
 
@@ -64,23 +80,50 @@ public class Main {
         listPanel = new JPanel(new BorderLayout());
         timetablePanel = new JPanel(new BorderLayout());
         infoDisplayPanel = new JPanel(new BorderLayout());
-
         calendar = new JCalendar();
-
-
         addNewTaskButton = new JButton("Add New Task");
         editTaskButton = new JButton("Edit Task");
         optionButton = new JButton("Options");
-
-
         taskButton = new JButton("Tasks");
         nextButton = new JButton("Next");
+
+        initTaskPanel();
+        initTimeTable();
+        initInfoPanel();
+        initSidePanel();
+        initTaskAddPanel();
+        initListeners();
+
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        mainPanel.add(infoPanel, BorderLayout.WEST);
+        mainPanel.add(inputPanel, BorderLayout.EAST);
+        mainPanel.add(dayPanel, BorderLayout.CENTER);
+
+        f.getContentPane().add(mainPanel);
+        f.setVisible(true);
+        f.setSize(screenSize.width/2,screenSize.height/2);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    }
+
+    private void initTaskAddPanel(){
 
         newTaskPanel = new JPanel(new BorderLayout());
         inputPanel = new JPanel(new GridLayout(7,2));
         saveButton = new JButton("Save");
 
+        inputPanel.add(name); inputPanel.add(inputName);
+        inputPanel.add(description); inputPanel.add(inputDescription);
+        inputPanel.add(duration); inputPanel.add(inputDuration);
+        inputPanel.add(intervals); inputPanel.add(inputIntervals);
+        inputPanel.add(urgency); inputPanel.add(inputUrgency);
+        inputPanel.add(category); inputPanel.add(inputCategory);
+        inputPanel.add(saveButton); inputPanel.add(new JLabel(" "));
 
+        inputPanel.setVisible(false);
+    }
+
+    public void initTimeTable(){
         String[][] times= {
                 {"00:00", ""},
                 {"01:00", ""},
@@ -112,21 +155,6 @@ public class Main {
         String[] columnNamesTimetable = {"Time: ", "Date: "+ LocalDate.now()};
         dayTimetable = new JTable(times, columnNamesTimetable);
         dayScrollPane = new JScrollPane(dayTimetable);
-
-        taskData = new String[][] {{"Homework", "2 hrs", "2", "14/2/20", "Urgent", "Revision for Test", "Work"},
-                {"Nap", "1 hr", "1", "today" , " Non-urgent", "Rest", "Sleep"}
-        };
-
-        String[] columnNamesTask = {"Name","Total Duration", "Intervals", "Deadline", "Urgency", "Description", "Category"};
-
-        taskList = new JTable(taskData, columnNamesTask);
-        taskScrollPane = new JScrollPane(taskList);
-
-        JTextArea info = new JTextArea("data");
-
-        infoDisplayPanel.add(new JTextArea(13,10), BorderLayout.CENTER);
-        infoDisplayPanel.setVisible(false);
-
         JPanel dayScrollPaneHolder = new JPanel(new BorderLayout());
         dayScrollPaneHolder.add(dayScrollPane,BorderLayout.CENTER);
         dayScrollPaneHolder.add(infoDisplayPanel,BorderLayout.SOUTH);
@@ -134,20 +162,47 @@ public class Main {
         timetablePanel.add(taskButton, BorderLayout.SOUTH);
         timetablePanel.add(dayScrollPaneHolder, BorderLayout.CENTER);
 
+        dayPanel.add(listPanel, "tasks");
+        dayPanel.add(timetablePanel, "timetable");
+    }
+
+    private void initTaskPanel(){
+
+        taskData = new String[][] {{"Homework", "2 hrs", "2", "14/2/20", "Urgent", "Revision for Test", "Work"},
+                {"Nap", "1 hr", "1", "today" , " Non-urgent", "Rest", "Sleep"}
+        };
+
+        String[] columnNames = {"Name","Total Duration", "Intervals", "Deadline", "Urgency", "Description", "Category"};
+
+        populateTable(taskScrollPane, columnNames, taskData);
         listPanel.add(nextButton, BorderLayout.SOUTH);
         listPanel.add(taskScrollPane, BorderLayout.CENTER);
 
-        dayPanel.add(listPanel, "tasks");
-        dayPanel.add(timetablePanel, "timetable");
 
+    }
+
+    private void populateTable(JScrollPane pane,String[] columnNames, String[][] data){
+        taskList = new JTable(taskData, columnNames);
+        taskScrollPane = new JScrollPane(taskList);
+    }
+
+    private void initInfoPanel(){
+
+        infoDisplayPanel.add(new JTextArea(13,10), BorderLayout.CENTER);
+        infoDisplayPanel.setVisible(false);
+
+    }
+
+    private void initSidePanel(){
         calendarPanel.add(calendar);
 
         infoPanel.add(calendarPanel);
         infoPanel.add(optionButton);
         infoPanel.add(editTaskButton);
         infoPanel.add(addNewTaskButton);
+    }
 
-
+    private void initListeners(){
         nextButton.addActionListener(e->{
             cardLayout.show(dayPanel, "timetable");
         });
@@ -155,7 +210,6 @@ public class Main {
         taskButton.addActionListener(e->{
             cardLayout.show(dayPanel, "tasks");
         });
-
         dayTimetable.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e){
                 int row = dayTimetable.getSelectedRow();
@@ -169,36 +223,6 @@ public class Main {
 
             }
         });
-
-        String [] urgencyStrings = {"Non-urgent", "Urgent", "Very urgent"};
-        String[] categoryStrings = {"Work", "Sleep", "Eat", "Rest", "Activity"};
-
-        JLabel name = new JLabel("Name: ");
-        JLabel description = new JLabel("Description: ");
-        JLabel duration = new JLabel("Duration: ");
-        JLabel intervals = new JLabel("Intervals: ");
-        JLabel urgency = new JLabel("Urgency: ");
-        JLabel category = new JLabel("Category: ");
-
-        JTextField inputName= new JTextField(15);
-        JTextField inputDescription = new JTextField((15));
-        JSpinner inputDuration = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-        JSpinner inputIntervals = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-        JComboBox inputUrgency = new JComboBox(urgencyStrings);
-        JComboBox inputCategory = new JComboBox(categoryStrings);
-
-        JLabel e1 = new JLabel(" ");
-
-        inputPanel.add(name); inputPanel.add(inputName);
-        inputPanel.add(description); inputPanel.add(inputDescription);
-        inputPanel.add(duration); inputPanel.add(inputDuration);
-        inputPanel.add(intervals); inputPanel.add(inputIntervals);
-        inputPanel.add(urgency); inputPanel.add(inputUrgency);
-        inputPanel.add(category); inputPanel.add(inputCategory);
-        inputPanel.add(saveButton); inputPanel.add(e1);
-
-        inputPanel.setVisible(false);
-
         addNewTaskButton.addActionListener(e->{
             inputPanel.setVisible(true);
         });
@@ -213,25 +237,12 @@ public class Main {
             };
 
         });
-
-
-        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        mainPanel.add(infoPanel, BorderLayout.WEST);
-        mainPanel.add(inputPanel, BorderLayout.EAST);
-        mainPanel.add(dayPanel, BorderLayout.CENTER);
-
-        f.getContentPane().add(mainPanel);
-        f.setVisible(true);
-        f.setSize(screenSize.width/2,screenSize.height/2);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
     }
 
     public static void main(String[] args) {
 
-        new Main();
+        Main main = new Main();
+        main.init();
     }
 
 }
