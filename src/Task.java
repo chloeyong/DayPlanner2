@@ -19,6 +19,7 @@ public class Task extends TimeTaker{
         this.description = description;
         this.category = category;
         this.duration = duration;
+        this.setIntervals(new ArrayList<>(duration));
     }
 
     public Task(String name, MyDateTime deadline, int urgency, String description, String category, int duration) {
@@ -28,6 +29,7 @@ public class Task extends TimeTaker{
         this.description = description;
         this.category = category;
         this.duration = duration;
+        this.setIntervals(new ArrayList<>(duration));
     }
 
 

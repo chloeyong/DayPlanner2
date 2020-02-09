@@ -55,9 +55,11 @@ public class ChummiesMagicMaker implements BackEnd {
         ArrayList<Task> tasksWithDeads = new ArrayList<>();
         ArrayList<Task> tasksForWhenever = new ArrayList<>();
         for (Task task : tasks){
-            if (!task.getDeadline().equals(null)){
-                tasksWithDeads.add(task);
-            }else{
+            try{
+                if(task.getDeadline() != null)
+                    tasksWithDeads.add(task);
+            }
+            catch(NullPointerException ex){
                 tasksForWhenever.add(task);
             }
         }
