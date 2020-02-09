@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 public class MockFrontEnd implements FrontEnd {
 
+
+    private Options options;
     /***
      * Need to create:
      *
@@ -50,6 +52,7 @@ public class MockFrontEnd implements FrontEnd {
         tasks.get(4).setIntervals(intervals3);
 
         restTimes.add(new RestTime(1320, 480));
+        this.options = new Options(10, 5);
 
 
 //        tasks.add()
@@ -59,16 +62,16 @@ public class MockFrontEnd implements FrontEnd {
 
     @Override
     public ArrayList<Task> getTasks() {
-        return null;
+        return tasks;
     }
 
     @Override
     public ArrayList<RestTime> getRestTimes() {
-        return null;
+        return restTimes;
     }
 
     @Override
     public Options getOptions() {
-        return null;
+        return options;
     }
 }

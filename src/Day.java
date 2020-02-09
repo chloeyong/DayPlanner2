@@ -5,6 +5,10 @@ import java.util.HashMap;
 
 public class Day {
 
+    public ArrayList<Tuple<TimeTaker, Integer>> getTimeTakerAndIntervalLength() {
+        return timeTakerAndIntervalLength;
+    }
+
     /**
      * Task and interval number (which interval you're on)
      * This is going to have tasks where the name for each repeated (continued task) is
@@ -33,16 +37,25 @@ public class Day {
     }
 
     public boolean addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
+//        int nextAvail = getNextAvailability();
+//        for(int x = nextAvail; x<=nextAvail+ )
+
         timeTakerAndIntervalLength.add(ti);
         //todo this needs testing with some dummy data!! get on it scrub!
         int currentTime = startTime;
-        for(int i = 0;i < ti.getX().getIntervals().get(ti.getY());i++){
+        int size =  ti.getX().getIntervals().get(ti.getY());
+        for(int i = 0;i < size;i++){
             this.availability.put(currentTime,ti.getX());
             currentTime = incrementMins(currentTime);
-            ti.getX().getIntervals().remove(i);
+            if(!(ti.getX() instanceof  RestTime)) {
+                ti.getX().getIntervals().remove(i);
+            }else{
+                return true;
+            }
             if(ti.getX().getIntervals().size() == 0){
                 return true;
             }
+
         }
         return false;
     }
