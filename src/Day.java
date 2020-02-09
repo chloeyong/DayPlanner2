@@ -39,9 +39,7 @@ public class Day {
     public boolean addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
 //        int nextAvail = getNextAvailability();
 //        for(int x = nextAvail; x<=nextAvail+ )
-        if( ti.getX() instanceof Task){
-//            System.out.println("Doing "+ti.getX().getName());
-        }
+
         timeTakerAndIntervalLength.add(ti);
         int currentTime = startTime;
 //        System.out.println(ti.getX().getName()+"  "+ti.getX().getIntervals());
@@ -56,8 +54,15 @@ public class Day {
         }
 //        System.out.println(size);
         for(int i = 0;i < size;i++) {
+//            System.out.println(availability.get(currentTime));
             this.availability.put(currentTime, ti.getX());
-//            currentTime = incrementMins(currentTime);
+//            System.out.println(availability.get(currentTime));
+
+            if( ti.getX() instanceof Task){
+//              System.out.println("Doing "+ti.getX().getName());
+//                System.out.println(currentTime);
+            }
+            currentTime = incrementMins(currentTime);
             if(currentTime<1439){
                 currentTime++;
             }else{
@@ -98,6 +103,7 @@ public class Day {
     public int getNextAvailability(){
         for (int i = 0; i < 1441; i++){
             if(availability.get(i) == null){
+                System.out.println("Null??");
                 return i;
             }
         }
