@@ -15,25 +15,39 @@ public class ChummiesMagicMaker implements BackEnd {
 
 
     public static void main(String[] args){
-        ChummiesMagicMaker magicMaker = new ChummiesMagicMaker(new MockFrontEnd(), new MyDateTime(20200206, 0));
+        FrontEnd frontEnd = new MockFrontEnd();
+        ChummiesMagicMaker magicMaker = new ChummiesMagicMaker(frontEnd, new MyDateTime(20200206, 0));
         magicMaker.generateDays();
         for(Day thisDay : magicMaker.days){
 
             for(Tuple thing: thisDay.getTimeTakerAndIntervalLength()){
                 if (thing.getX() instanceof Task){
-                    System.out.println(((Task) thing.getX()).getName());
+//                    System.out.println(((Task) thing.getX()).getName());
                 }else if(thing.getX() instanceof RestTime){
-                    System.out.println("Rest is here.");
-                    System.out.println(((RestTime) thing.getX()).getName()+" "+((RestTime) thing.getX()).getDuration());
+//                    System.out.println("Rest is here.");
+//                    System.out.println(((RestTime) thing.getX()).getName()+" "+((RestTime) thing.getX()).getDuration());
                 }
-        }
+            }
+
+//            System.out.println(thisDay.getAvailability().toString());
 //        Day thisDay = magicMaker.days.get(0);
-        System.out.println(thisDay.getTimeTakerAndIntervalLength().size());
+//        System.out.println(thisDay.getTimeTakerAndIntervalLength().size());
 
 
             //todo bugtest the generateDays() method
 
         }
+
+        Day thisDay = magicMaker.days.get(0);
+
+        for (int i = 0; i<5;i++){
+//            System.out.println(frontEnd.getTasks().get(i).getName());
+            thisDay = magicMaker.days.get(i);
+            System.out.println(thisDay.getAvailability().get(frontEnd.getTasks().get(i).getName()));
+        }
+
+        System.out.println(thisDay.getAvailability().toString());
+
     }
 
 
@@ -70,10 +84,11 @@ public class ChummiesMagicMaker implements BackEnd {
             }
         }
         Collections.sort(tasksWithDeads, new DeadlineComparitor());
-
+//        System.out.println(tasksWithDeads.get(0).getName());
 
         for(int i = 0;i<=largestNumberOfIntervals();i++){
             for (Task task : tasksWithDeads){
+//                System.out.println(task.getName());
                 if (task.getIntervals().size()>=i){
                     int nextAvail = days.get(currentDay).getNextAvailability();
                     int nextInterval = days.get(currentDay).nextPossibleInterval(task);
@@ -87,6 +102,20 @@ public class ChummiesMagicMaker implements BackEnd {
                     }
                 }
                 //Same as rest only working backwards to make sure that everything fits in a given constraint
+            }
+            for(Task task : tasksForWhenever){
+                if (task.getIntervals().size()>=i){
+                    int nextAvail = days.get(currentDay).getNextAvailability();
+                    int nextInterval = days.get(currentDay).nextPossibleInterval(task);
+                    if(nextInterval!= -1) {
+                        if(days.get(currentDay).addTimeInterval(new Tuple(task, nextInterval), nextAvail))
+                            tasksForWhenever.remove(task);
+//                        days.get(currentDay).addTimeInterval(new RestTime())
+                    }
+                    else{
+                        currentDay++;
+                    }
+                }
             }
             //todo for tasks without deadlines has to be done too!!
         }

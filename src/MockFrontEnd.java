@@ -47,6 +47,7 @@ public class MockFrontEnd implements FrontEnd {
         tasks.add(new Task("task4", new MyDateTime(20200209, 640),4, "description", "Work", 80));
         tasks.add(new Task("task5", 5, "big description, guess what, urgency is a LIE", "sleep?",320));
 //        tasks.get(0).setIntervals(new ArrayList<Integer>(new Integer()[]
+        populateIntervals();
         tasks.get(0).setIntervals(intervals1);
         tasks.get(2).setIntervals(intervals2);
         tasks.get(4).setIntervals(intervals3);
