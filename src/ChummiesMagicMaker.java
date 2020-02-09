@@ -24,6 +24,9 @@ public class ChummiesMagicMaker implements BackEnd {
             }else if(thing.getX() instanceof RestTime){
                 System.out.println("Rest time");
             }
+
+            //todo bugtest the generateDays() method
+
         }
     }
 
@@ -59,7 +62,6 @@ public class ChummiesMagicMaker implements BackEnd {
             }
         }
         Collections.sort(tasksWithDeads, new DeadlineComparitor());
-        //todo gotta order the deads list list by deads my head hurts
 
 
         for(int i = 1;i<=largestNumberOfIntervals();i++){
@@ -75,9 +77,7 @@ public class ChummiesMagicMaker implements BackEnd {
                     else{
                         currentDay++;
                     }
-                    //todo decipher the true nature of intervals, what are they really?
                 }
-                //todo allocate time for the tasks too
                 //Same as rest only working backwards to make sure that everything fits in a given constraint
             }
             //todo for tasks without deadlines has to be done too!!
