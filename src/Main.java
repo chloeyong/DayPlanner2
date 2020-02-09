@@ -1,15 +1,21 @@
 import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.table.TableColumnModel;
 
-public class Main {
+public class Main implements FrontEnd{
 
     private JFrame f;
 
@@ -47,6 +53,9 @@ public class Main {
 
     private String[][] taskData;
 
+    private JPanel optionPanel;
+    private JButton saveButton2;
+
 
     String [] urgencyStrings = {"Non-urgent", "Urgent", "Very urgent"};
     String[] categoryStrings = {"Work", "Sleep", "Eat", "Rest", "Activity"};
@@ -54,6 +63,7 @@ public class Main {
     JLabel name = new JLabel("Name: ");
     JLabel description = new JLabel("Description: ");
     JLabel duration = new JLabel("Duration: ");
+    JLabel deadline = new JLabel("Deadline: ");
     JLabel intervals = new JLabel("Intervals: ");
     JLabel urgency = new JLabel("Urgency: ");
     JLabel category = new JLabel("Category: ");
@@ -61,10 +71,20 @@ public class Main {
     JTextField inputName= new JTextField(15);
     JTextField inputDescription = new JTextField((15));
     JSpinner inputDuration = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    JDateChooser inputDeadline = new JDateChooser();
     JSpinner inputIntervals = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     JComboBox inputUrgency = new JComboBox(urgencyStrings);
     JComboBox inputCategory = new JComboBox(categoryStrings);
 
+    JLabel restTime = new JLabel("Rest Time: ");
+    JLabel drinking = new JLabel("Drinking Amount: ");
+    JLabel sleeping = new JLabel("Sleep Time: ");
+    JLabel working = new JLabel("Work Time: ");
+
+    JSpinner inputRestTime = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    JSpinner inputDrink = new JSpinner(new SpinnerNumberModel(1, 0, null, 1));
+    JSpinner inputSleeping = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    JSpinner inputWorking = new JSpinner(new SpinnerNumberModel(1, 0, null, 1));
 
 
     public void init(){
@@ -87,6 +107,8 @@ public class Main {
         taskButton = new JButton("Tasks");
         nextButton = new JButton("Next");
 
+        editTaskButton.setEnabled(false);
+
         initTaskPanel();
         initTimeTable();
         initInfoPanel();
@@ -97,6 +119,7 @@ public class Main {
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         mainPanel.add(infoPanel, BorderLayout.WEST);
         mainPanel.add(inputPanel, BorderLayout.EAST);
+        mainPanel.add(optionPanel, BorderLayout.NORTH);
         mainPanel.add(dayPanel, BorderLayout.CENTER);
 
         f.getContentPane().add(mainPanel);
@@ -104,23 +127,42 @@ public class Main {
         f.setSize(screenSize.width/2,screenSize.height/2);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        //LocalDate date = LocalDate.now();
+        //String sDate = (String) date.replaceAll("\\D","");
+
+
+
+        //MyDateTime mdt = new MyDateTime(Integer.valueOf(sDate),0);
+        //BackEnd backend = new ChummiesMagicMaker(this, mdt);
+
     }
 
     private void initTaskAddPanel(){
 
         newTaskPanel = new JPanel(new BorderLayout());
-        inputPanel = new JPanel(new GridLayout(7,2));
+        inputPanel = new JPanel(new GridLayout(8,2));
+        optionPanel = new JPanel(new GridLayout(5,2));
         saveButton = new JButton("Save");
+        saveButton2 = new JButton("Save");
 
         inputPanel.add(name); inputPanel.add(inputName);
         inputPanel.add(description); inputPanel.add(inputDescription);
         inputPanel.add(duration); inputPanel.add(inputDuration);
+        inputPanel.add(deadline); inputPanel.add(inputDeadline);
         inputPanel.add(intervals); inputPanel.add(inputIntervals);
         inputPanel.add(urgency); inputPanel.add(inputUrgency);
         inputPanel.add(category); inputPanel.add(inputCategory);
         inputPanel.add(saveButton); inputPanel.add(new JLabel(" "));
 
         inputPanel.setVisible(false);
+
+        optionPanel.add(restTime); optionPanel.add(inputRestTime);
+        optionPanel.add(drinking); optionPanel.add(inputDrink);
+        optionPanel.add(sleeping); optionPanel.add(inputSleeping);
+        optionPanel.add(working); optionPanel.add(inputWorking);
+        optionPanel.add(saveButton2); optionPanel.add(new JLabel(" "));
+
+        optionPanel.setVisible(false);
     }
 
     public void initTimeTable(){
@@ -154,7 +196,13 @@ public class Main {
 
         String[] columnNamesTimetable = {"Time: ", "Date: "+ LocalDate.now()};
         dayTimetable = new JTable(times, columnNamesTimetable);
+        TableColumnModel columnModel = dayTimetable.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(10);
+        columnModel.getColumn(1).setPreferredWidth(470);
         dayScrollPane = new JScrollPane(dayTimetable);
+        dayScrollPane.setPreferredSize(new Dimension(480,300));
+
+
         JPanel dayScrollPaneHolder = new JPanel(new BorderLayout());
         dayScrollPaneHolder.add(dayScrollPane,BorderLayout.CENTER);
         dayScrollPaneHolder.add(infoDisplayPanel,BorderLayout.SOUTH);
@@ -168,8 +216,8 @@ public class Main {
 
     private void initTaskPanel(){
 
-        taskData = new String[][] {{"Homework", "2 hrs", "2", "14/2/20", "Urgent", "Revision for Test", "Work"},
-                {"Nap", "1 hr", "1", "today" , " Non-urgent", "Rest", "Sleep"}
+        taskData = new String[][] {{"Homework", "140", "2", "2020-02-14", "Urgent", "Revision for Test", "Work"},
+                {"Nap", "60", "1", "2020-02-9" , " Non-urgent", "Rest", "Sleep"}
         };
 
         String[] columnNames = {"Name","Total Duration", "Intervals", "Deadline", "Urgency", "Description", "Category"};
@@ -210,6 +258,20 @@ public class Main {
         taskButton.addActionListener(e->{
             cardLayout.show(dayPanel, "tasks");
         });
+
+        taskList.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e){
+                int row = dayTimetable.getSelectedRow();
+                if(row==-1){
+                    editTaskButton.setEnabled(true);
+                }
+                else if(row!=-1){
+                    editTaskButton.setEnabled(false);
+                }
+
+            }
+        });
+
         dayTimetable.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e){
                 int row = dayTimetable.getSelectedRow();
@@ -223,9 +285,40 @@ public class Main {
 
             }
         });
+
         addNewTaskButton.addActionListener(e->{
             inputPanel.setVisible(true);
+            Date date = null;
+
+            inputName.setText("");
+            inputDuration.setValue(1);
+            inputIntervals.setValue(1);
+            inputDeadline.setDate(date);
+            inputUrgency.setSelectedIndex(0);
+            inputDescription.setText("");
+            inputCategory.setSelectedIndex(0);
+
         });
+
+        editTaskButton.addActionListener(e->{
+            inputPanel.setVisible(true);
+            String [] s = taskData[taskList.getSelectedRow()];
+            Date date = null;
+            try {
+                date = new SimpleDateFormat("yyyy-MM-dd").parse(s[3]);
+            }
+            catch(ParseException ex){
+            }
+
+            inputName.setText(s[0]);
+            inputDuration.setValue(Integer.valueOf(s[1]));
+            inputIntervals.setValue(Integer.valueOf(s[2]));
+            inputDeadline.setDate(date);
+            inputUrgency.setSelectedItem(s[4]);
+            inputDescription.setText(s[5]);
+            inputCategory.setSelectedItem(s[6]);
+        });
+
         saveButton.addActionListener(e->{
             inputPanel.setVisible(false);
             String [] newTask = {inputName.getText(),
@@ -237,6 +330,19 @@ public class Main {
             };
 
         });
+
+        optionButton.addActionListener(e->{
+            optionPanel.setVisible(true);
+        });
+
+        saveButton2.addActionListener(e->{
+            optionPanel.setVisible(false);
+            inputRestTime.setValue(inputRestTime.getValue());
+            inputDrink.setValue(inputDrink.getValue());
+            inputSleeping.setValue(inputSleeping.getValue());
+            inputWorking.setValue(inputWorking.getValue());
+        });
+
     }
 
     public static void main(String[] args) {
@@ -245,5 +351,19 @@ public class Main {
         main.init();
     }
 
+    @Override
+    public ArrayList<Task> getTasks() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<RestTime> getRestTimes() {
+        return null;
+    }
+
+    @Override
+    public Options getOptions() {
+        return null;
+    }
 }
 
