@@ -3,6 +3,8 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.ParseException;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 public class Main implements FrontEnd{
@@ -50,11 +53,14 @@ public class Main implements FrontEnd{
     private JPanel newTaskPanel;
     private JPanel inputPanel;
     private JButton saveButton;
+    private JButton deleteButton;
 
     private String[][] taskData;
 
     private JPanel optionPanel;
     private JButton saveButton2;
+
+    private JPanel buttonPanel;
 
 
     String [] urgencyStrings = {"Non-urgent", "Urgent", "Very urgent"};
@@ -86,6 +92,8 @@ public class Main implements FrontEnd{
     JSpinner inputSleeping = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     JSpinner inputWorking = new JSpinner(new SpinnerNumberModel(1, 0, null, 1));
 
+    String[] columnNames = {"Name","Total Duration", "Intervals", "Deadline", "Urgency", "Description", "Category"};
+
 
     public void init(){
         f = new JFrame();
@@ -107,7 +115,10 @@ public class Main implements FrontEnd{
         taskButton = new JButton("Tasks");
         nextButton = new JButton("Next");
 
+        deleteButton = new JButton("Delete");
+
         editTaskButton.setEnabled(false);
+        deleteButton.setEnabled(false);
 
         initTaskPanel();
         initTimeTable();
@@ -127,13 +138,13 @@ public class Main implements FrontEnd{
         f.setSize(screenSize.width/2,screenSize.height/2);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //LocalDate date = LocalDate.now();
-        //String sDate = (String) date.replaceAll("\\D","");
+        LocalDate date = LocalDate.now();
+        String sDate = date.toString().replaceAll("\\D","");
 
 
 
-        //MyDateTime mdt = new MyDateTime(Integer.valueOf(sDate),0);
-        //BackEnd backend = new ChummiesMagicMaker(this, mdt);
+        MyDateTime mdt = new MyDateTime(Integer.valueOf(sDate),0);
+        BackEnd backend = new ChummiesMagicMaker(this, mdt);
 
     }
 
@@ -215,18 +226,53 @@ public class Main implements FrontEnd{
     }
 
     private void initTaskPanel(){
-
-        taskData = new String[][] {{"Homework", "140", "2", "2020-02-14", "Urgent", "Revision for Test", "Work"},
-                {"Nap", "60", "1", "2020-02-9" , " Non-urgent", "Rest", "Sleep"}
-        };
-
-        String[] columnNames = {"Name","Total Duration", "Intervals", "Deadline", "Urgency", "Description", "Category"};
-
+        taskData = new String[0][0];
         populateTable(taskScrollPane, columnNames, taskData);
+        addToTable(taskList, new String[]{"Homework", "140", "2", "2020-02-14", "Urgent", "Revision for Test", "Work"});
+        addToTable(taskList, new String[]{"Nap", "60", "1", "2020-02-9" , " Non-urgent", "Rest", "Sleep"});
+
         listPanel.add(nextButton, BorderLayout.SOUTH);
         listPanel.add(taskScrollPane, BorderLayout.CENTER);
 
 
+    }
+
+    private String[][] getTaskData(JTable table){
+        String[][] taskData = new String[table.getModel().getRowCount()][table.getModel().getColumnCount()];
+        for(int i = 0; i < table.getModel().getRowCount(); i++){
+            String[] taskDataTemp = new String[table.getModel().getColumnCount()];
+            for(int j = 0; j < table.getModel().getColumnCount(); j++){
+                taskDataTemp[j] = table.getModel().getValueAt(i,j).toString();
+            }
+            taskData[i] = taskDataTemp;
+        }
+        return taskData;
+    }
+
+    private DefaultTableModel addToTable(JTable table, String[] rowData){
+        taskData = getTaskData(table);
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(columnNames);
+        for(String[] row : taskData){
+            model.addRow(row);
+        }
+        model.addRow(rowData);
+        table.setModel(model);
+        return model;
+    }
+
+    private DefaultTableModel editTable(JTable table, String[] rowData){
+        taskData = getTaskData(table);
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(columnNames);
+        for(String[] row : taskData){
+            model.addRow(row);
+        }
+        for(int i = 0; i < taskData[0].length; i++) {
+            model.setValueAt(rowData[i], table.getSelectedRow(), i);
+        }
+        table.setModel(model);
+        return model;
     }
 
     private void populateTable(JScrollPane pane,String[] columnNames, String[][] data){
@@ -245,12 +291,58 @@ public class Main implements FrontEnd{
         calendarPanel.add(calendar);
 
         infoPanel.add(calendarPanel);
-        infoPanel.add(optionButton);
-        infoPanel.add(editTaskButton);
-        infoPanel.add(addNewTaskButton);
+        JPanel emptyPanel1 = new JPanel();
+        JPanel emptyPanel2 = new JPanel();
+
+        buttonPanel = new JPanel(new GridLayout(4,1));
+
+        buttonPanel.add(optionButton);
+        buttonPanel.add(deleteButton);
+        buttonPanel.add(editTaskButton);
+        buttonPanel.add(addNewTaskButton);
+
+        infoPanel.add(emptyPanel1);
+        infoPanel.add(emptyPanel2);
+        infoPanel.add(buttonPanel);
     }
 
     private void initListeners(){
+        ActionListener addListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inputPanel.setVisible(false);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String date = sdf.format(inputDeadline.getDate());
+                String [] newTask = {inputName.getText(),
+                        inputDuration.getValue().toString(),
+                        inputIntervals.getValue().toString(),
+                        date,
+                        inputUrgency.getSelectedItem().toString(),
+                        inputDescription.getText(),
+                        inputCategory.getSelectedItem().toString()
+                };
+                addToTable(taskList, newTask);
+            }
+        };
+        ActionListener editListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inputPanel.setVisible(false);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String date = sdf.format(inputDeadline.getDate());
+                String [] newTask = {inputName.getText(),
+                        inputDuration.getValue().toString(),
+                        inputIntervals.getValue().toString(),
+                        date,
+                        inputUrgency.getSelectedItem().toString(),
+                        inputDescription.getText(),
+                        inputCategory.getSelectedItem().toString()
+                };
+                editTable(taskList, newTask);
+            }
+        };
+        saveButton.addActionListener(editListener);
+        saveButton.addActionListener(addListener);
         nextButton.addActionListener(e->{
             cardLayout.show(dayPanel, "timetable");
         });
@@ -264,9 +356,11 @@ public class Main implements FrontEnd{
                 int row = dayTimetable.getSelectedRow();
                 if(row==-1){
                     editTaskButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
                 }
                 else if(row!=-1){
                     editTaskButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
                 }
 
             }
@@ -297,39 +391,33 @@ public class Main implements FrontEnd{
             inputUrgency.setSelectedIndex(0);
             inputDescription.setText("");
             inputCategory.setSelectedIndex(0);
+            saveButton.removeActionListener(editListener);
+            saveButton.removeActionListener(addListener);
+            saveButton.addActionListener(addListener);
 
         });
 
         editTaskButton.addActionListener(e->{
             inputPanel.setVisible(true);
-            String [] s = taskData[taskList.getSelectedRow()];
             Date date = null;
             try {
-                date = new SimpleDateFormat("yyyy-MM-dd").parse(s[3]);
+                date = new SimpleDateFormat("yyyy-MM-dd").parse(taskList.getModel().getValueAt(taskList.getSelectedRow(),3).toString());
             }
             catch(ParseException ex){
             }
 
-            inputName.setText(s[0]);
-            inputDuration.setValue(Integer.valueOf(s[1]));
-            inputIntervals.setValue(Integer.valueOf(s[2]));
+            inputName.setText(taskList.getModel().getValueAt(taskList.getSelectedRow(),0).toString());
+            inputDuration.setValue(Integer.valueOf(taskList.getModel().getValueAt(taskList.getSelectedRow(),1).toString()));
+            inputIntervals.setValue(Integer.valueOf(taskList.getModel().getValueAt(taskList.getSelectedRow(),2).toString()));
             inputDeadline.setDate(date);
-            inputUrgency.setSelectedItem(s[4]);
-            inputDescription.setText(s[5]);
-            inputCategory.setSelectedItem(s[6]);
+            inputUrgency.setSelectedItem(taskList.getModel().getValueAt(taskList.getSelectedRow(),4).toString());
+            inputDescription.setText(taskList.getModel().getValueAt(taskList.getSelectedRow(),5).toString());
+            inputCategory.setSelectedItem(taskList.getModel().getValueAt(taskList.getSelectedRow(),6).toString());
+            saveButton.removeActionListener(editListener);
+            saveButton.removeActionListener(addListener);
+            saveButton.addActionListener(editListener);
         });
 
-        saveButton.addActionListener(e->{
-            inputPanel.setVisible(false);
-            String [] newTask = {inputName.getText(),
-                    inputDescription.getText(),
-                    (String) inputDuration.getValue(),
-                    (String) inputIntervals.getValue(),
-                    (String) inputUrgency.getSelectedItem(),
-                    (String) inputCategory.getSelectedItem()
-            };
-
-        });
 
         optionButton.addActionListener(e->{
             optionPanel.setVisible(true);
@@ -341,6 +429,10 @@ public class Main implements FrontEnd{
             inputDrink.setValue(inputDrink.getValue());
             inputSleeping.setValue(inputSleeping.getValue());
             inputWorking.setValue(inputWorking.getValue());
+        });
+
+        deleteButton.addActionListener(e->{
+            ((DefaultTableModel) taskList.getModel()).removeRow(taskList.getSelectedRow());
         });
 
     }
