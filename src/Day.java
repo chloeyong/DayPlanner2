@@ -39,7 +39,9 @@ public class Day {
     public boolean addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
 //        int nextAvail = getNextAvailability();
 //        for(int x = nextAvail; x<=nextAvail+ )
-
+        if( ti.getX() instanceof Task){
+            System.out.println("Doing a task");
+        }
         timeTakerAndIntervalLength.add(ti);
         //todo this needs testing with some dummy data!! get on it scrub!
         int currentTime = startTime;
@@ -80,6 +82,9 @@ public class Day {
     }
 
     public int nextPossibleInterval(TimeTaker timeTaker) {
+        if(timeTaker.getIntervals().size()==0){
+            return 0;
+        }
         for (int interval : timeTaker.getIntervals()) {
             if (getNextAvailability() + interval <= 1440 && getNextAvailability() != -1) {
                 return timeTaker.getIntervals().get(interval);
