@@ -39,24 +39,49 @@ public class Day {
     public boolean addTimeInterval(Tuple<TimeTaker, Integer> ti, int startTime){
 //        int nextAvail = getNextAvailability();
 //        for(int x = nextAvail; x<=nextAvail+ )
-
+        if( ti.getX() instanceof Task){
+//            System.out.println("Doing "+ti.getX().getName());
+        }
         timeTakerAndIntervalLength.add(ti);
-        //todo this needs testing with some dummy data!! get on it scrub!
         int currentTime = startTime;
-        int size =  ti.getX().getIntervals().get(ti.getY());
-        for(int i = 0;i < size;i++){
-            this.availability.put(currentTime,ti.getX());
-            currentTime = incrementMins(currentTime);
-            if(!(ti.getX() instanceof  RestTime)) {
-                ti.getX().getIntervals().remove(i);
+//        System.out.println(ti.getX().getName()+"  "+ti.getX().getIntervals());
+//        System.out.println(availability.toString());
+        int size;
+        //todo work out what was wrong with this later and tell my off but I want to fix other things rn
+        try {
+            size = ti.getX().getIntervals().get(ti.getY());
+        }catch(IndexOutOfBoundsException e){
+            e.printStackTrace();
+            return false;
+        }
+//        System.out.println(size);
+        for(int i = 0;i < size;i++) {
+            this.availability.put(currentTime, ti.getX());
+//            currentTime = incrementMins(currentTime);
+            if(currentTime<1439){
+                currentTime++;
             }else{
+                currentTime=0;
+            }
+
+
+//            System.out.println(currentTime);
+//            System.out.println(availability);
+        }
+            if(!(ti.getX() instanceof  RestTime)) {
+                //todo work out whatever was meant to be happening here
+//                System.out.println(ti.getX().getIntervals());
+                ti.getX().getIntervals().remove(ti.getX().getIntervals().indexOf(size));
+            }else{
+//                System.out.println("Rest");
                 return true;
             }
             if(ti.getX().getIntervals().size() == 0){
+                System.out.println("Emptied");
                 return true;
             }
 
-        }
+//        }
         return false;
     }
 
@@ -80,9 +105,14 @@ public class Day {
     }
 
     public int nextPossibleInterval(TimeTaker timeTaker) {
+        if(timeTaker.getIntervals().size()==0){
+            return 0;
+        }
         for (int interval : timeTaker.getIntervals()) {
             if (getNextAvailability() + interval <= 1440 && getNextAvailability() != -1) {
-                return timeTaker.getIntervals().get(interval);
+//                System.out.println(timeTaker.getIntervals());
+//                System.out.println(interval);
+                return timeTaker.getIntervals().indexOf(interval);
             }
         }
         return -1;
